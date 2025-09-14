@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Portfolio - Nawab Sahab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'charcoal': '#1a1a1a',
+                        'dark-gray': '#0d0d0d',
+                        'warm-gold': '#D4AF37',
+                        'bronze': '#CD7F32'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .fade-in { animation: fadeIn 0.6s ease-in-out; }
+        .slide-up { animation: slideUp 0.8s ease-out; }
+        .scale-hover { transition: transform 0.3s ease; }
+        .scale-hover:hover { transform: scale(1.05); }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .hero-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://somethingspecialbyadity.wordpress.com/wp-content/uploads/2016/06/imgp0577.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+    <body class="bg-black text-white font-sans min-h-screen">
+    <!-- Password Protection Screen -->
+    <div id="loginScreen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
+        <div class="glass-effect rounded-2xl p-8 max-w-md w-full mx-4 fade-in">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-warm-gold mb-2">Exclusive Access</h1>
+                <p class="text-gray-300">Enter password to view portfolio</p>
+            </div>
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <input 
+                        type="password" 
+                        id="passwordInput" 
+                        placeholder="Enter password"
+                        class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg focus:outline-none focus:border-warm-gold transition-colors"
+                        required
+                    >
+                </div>
+                <button 
+                    type="submit"
+                    class="w-full bg-warm-gold text-dark-gray font-semibold py-3 px-6 rounded-lg hover:bg-bronze transition-colors scale-hover"
+                >
+                    Access Portfolio
+                </button>
+            </form>
+            <div id="errorMessage" class="mt-4 text-red-400 text-center hidden"></div>
+        </div>
+    </div>
+
+    <!-- Main Website Content -->
+    <div id="mainContent" class="hidden">
+        <!-- Navigation -->
+        <nav class="bg-black/95 backdrop-blur-sm fixed w-full top-0 z-40 border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="text-xl font-bold text-warm-gold">Nawab Sahab</div>
+                    <div class="flex items-center space-x-4">
+                        <button id="homeNavBtn" class="text-gray-300 hover:text-warm-gold transition-colors">
+                            Home
+                        </button>
+                        <button id="areasNavBtn" class="text-gray-300 hover:text-warm-gold transition-colors">
+                            Areas
+                        </button>
+                        <button id="logoutBtn" class="text-gray-300 hover:text-warm-gold transition-colors">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Home Page -->
+        <div id="homePage" class="page active pt-16">
+            <!-- Hero Section -->
+            <section class="hero-bg min-h-screen flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/50"></div>
+                <div class="relative z-10 text-center px-4 max-w-4xl mx-auto slide-up">
+                    <h1 class="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-warm-gold to-bronze bg-clip-text text-transparent">
+                        Nawab Sahab
+                    </h1>
+                    <h2 class="text-2xl md:text-3xl text-gray-300 mb-8 font-light">
+                        Real Estate Portfolio
+                    </h2>
+                    <p class="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
+                        Discover exclusive properties in prime locations. Each property represents years of expertise and uncompromising quality.
+                    </p>
+                    <button 
+                        id="exploreBtn"
+                        class="bg-warm-gold text-dark-gray font-semibold py-4 px-8 rounded-lg text-lg hover:bg-bronze transition-all duration-300 scale-hover shadow-2xl"
+                    >
+                        Explore Properties
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Area Selection Page -->
+        <div id="areaSelection" class="page pt-16">
+            <section class="py-20 bg-blue-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold mb-4 text-gray-800">Explore Our Areas</h2>
+                        <p class="text-gray-600 text-lg">Select a location to view available properties</p>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="area-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer scale-hover" data-area="aminabad">
+                            <div class="aspect-video bg-gray-200 overflow-hidden">
+                                <img src="https://travelsetu.com/apps/uploads/new_destinations_photos/destination/2024/01/05/1cdcbb21fe3ed1b222446006544eef59_1000x1000.jpg" alt="Aminabad" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-6 text-center">
+                                <h3 class="text-2xl font-bold mb-2 text-gray-800">Aminabad</h3>
+                                <p class="text-gray-600">Bustling urban center with commercial opportunities and modern amenities</p>
+                            </div>
+                        </div>
+                        <div class="area-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer scale-hover" data-area="malak">
+                            <div class="aspect-video bg-gray-200 overflow-hidden">
+                                <img src="https://rei.wlimg.com/prop_images/2468809/1152018_2.jpg" alt="Malak" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-6 text-center">
+                                <h3 class="text-2xl font-bold mb-2 text-gray-800">Malak</h3>
+                                <p class="text-gray-600">Expansive residential plots with development potential and green spaces</p>
+                            </div>
+                        </div>
+                        <div class="area-card bg-white rounded-2xl overflow-hidden shadow-lg cursor-pointer scale-hover" data-area="sarojini">
+                            <div class="aspect-video bg-gray-200 overflow-hidden">
+                                <img src="https://i0.wp.com/solarvillageproject.org/wp-content/uploads/2023/03/scroling-pic2-9-scaled.jpg?ssl=1" alt="Sarojini Nagar" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-6 text-center">
+                                <h3 class="text-2xl font-bold mb-2 text-gray-800">Sarojini Nagar</h3>
+                                <p class="text-gray-600">Charming residential area with local amenities and community feel</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Property Listings Page -->
+        <div id="propertyListings" class="page pt-16">
+            <section class="py-20 bg-black">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center mb-12">
+                        <h2 id="areaTitle" class="text-4xl font-bold"></h2>
+                        <button id="backToAreas" class="text-warm-gold hover:text-bronze transition-colors">
+                            ← Back to Areas
+                        </button>
+                    </div>
+                    <div id="propertiesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Properties will be dynamically loaded here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Property Details Modal -->
+        <div id="propertyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+            <div class="glass-effect rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-8">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 id="modalTitle" class="text-3xl font-bold text-warm-gold"></h2>
+                        <button id="closeModal" class="text-gray-400 hover:text-white text-2xl">×</button>
+                    </div>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <!-- Image Gallery -->
+                        <div>
+                            <div id="mainImage" class="aspect-video bg-gray-800 rounded-lg mb-4 overflow-hidden">
+                                <!-- Main image will be displayed here -->
+                            </div>
+                            <div id="thumbnailGallery" class="grid grid-cols-4 gap-2">
+                                <!-- Thumbnails will be displayed here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Property Details -->
+                        <div>
+                            <div id="propertyDetails" class="space-y-6">
+                                <!-- Property details will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Property Data
+        const propertyData = {
+            aminabad: [
+                {
+                    id: 1,
+                    name: "Shop No. 401",
+                    address: "401 Main Bazaar, Aminabad",
+                    bedrooms: 0,
+                    bathrooms: 1,
+                    sqft: 800,
+                    price: "₹45,00,000",
+                    description: "Prime shop location in Main Bazaar, Aminabad. Currently occupied by Wahid Biryani - The Real Taste of Mughlai Cuisine. Excellent footfall and visibility. Perfect for food business or retail. High customer traffic area.",
+                    images: [
+                        "https://content.jdmagicbox.com/comp/lucknow/c2/0522px522.x522.171012182226.v5c2/catalogue/wahid-biryani-lucknow-pl86i.jpg",
+                        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop"
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "Shop No. 402",
+                    address: "402 Main Bazaar, Aminabad",
+                    bedrooms: 0,
+                    bathrooms: 1,
+                    sqft: 750,
+                    price: "₹42,00,000",
+                    description: "Historic shop in Main Bazaar with Alamgir Hotel signage. Character-filled commercial space with rustic charm. Ideal for restaurant, hotel, or traditional business. High visibility location.",
+                    images: [
+                        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj26B-laUIWVx_qyUp2qF66vfdJDnL16_-oZsAaKqQctJp7VMYB-wF0t1Lf1u_HOZhQIE09gBWrZ9-4vndUypWi36VNaCdrSUZpZTfPaFcYD5FDCNMB0W4H7rsUuZ3stJlR9DbPu5mTRkoj/s1600/13781729_1222710774428574_764609903607950642_n.jpg",
+                        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop"
+                    ]
+                },
+                {
+                    id: 3,
+                    name: "Shop No. 403",
+                    address: "403 Main Bazaar, Aminabad",
+                    bedrooms: 0,
+                    bathrooms: 1,
+                    sqft: 650,
+                    price: "₹38,00,000",
+                    description: "Well-maintained shop currently housing Karamat Buttons. Modern interior with excellent lighting and display areas. Perfect for retail business, fashion accessories, or boutique. Prime commercial location.",
+                    images: [
+                        "https://www.nowlucknow.com/wp-content/uploads/2018/04/Karamat-1-1024x683.jpg",
+                        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&h=600&fit=crop"
+                    ]
+                },
+                {
+                    id: 4,
+                    name: "Shop No. 404",
+                    address: "404 Main Bazaar, Aminabad",
+                    bedrooms: 0,
+                    bathrooms: 1,
+                    sqft: 700,
+                    price: "₹40,00,000",
+                    description: "Modern watch shop location with New Gaurav Watch Co and Timex signage. Excellent for electronics, jewelry, or luxury retail. High-end commercial space with premium positioning.",
+                    images: [
+                        "https://content.jdmagicbox.com/v2/comp/delhi/84/011pg025984/catalogue/new-gaurav-watch-co-lajpat-nagar-2-delhi-wrist-watch-repair-and-services-sv2p2zo44o.jpg",
+                        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop"
+                    ]
+                }
+            ],
+            malak: [
+                {
+                    id: 4,
+                    name: "Khasra No. 9666",
+                    address: "789 Pine Road, Lakeside",
+                    bedrooms: 0,
+                    bathrooms: 0,
+                    sqft: 25000,
+                    price: "₹85,00,000",
+                    description: "Prime land plot with excellent development potential. Features sandy soil suitable for construction, existing foundation outlines, and scenic palm tree views. Perfect for residential or commercial development. Located in the peaceful Lakeside area.",
+                    images: [
+                        "https://5.imimg.com/data5/SELLER/Default/2022/6/PY/XW/GM/143012748/9d46f98d-0ac3-43e9-9687-ceaefe0c2e5a-500x500.jpg",
+                        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop"
+                    ]
+                },
+                {
+                    id: 5,
+                    name: "Khasra No. 9667",
+                    address: "101 Oak Lane, The Countryside",
+                    bedrooms: 0,
+                    bathrooms: 0,
+                    sqft: 32000,
+                    price: "₹1,20,00,000",
+                    description: "Premium developed land plot with lush green landscape. Well-maintained area with utility infrastructure already in place. Features paved pathways and street lighting. Ideal for luxury residential development or commercial projects.",
+                    images: [
+                        "https://rei.wlimg.com/prop_images/2468809/1152018_2.jpg",
+                        "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=600&fit=crop"
+                    ]
+                },
+                {
+                    id: 6,
+                    name: "Khasra No. 9665",
+                    address: "123 Forest View, Malak",
+                    bedrooms: 0,
+                    bathrooms: 0,
+                    sqft: 28000,
+                    price: "₹95,00,000",
+                    description: "Spacious land plot with excellent road connectivity. Features existing foundation structures and ample parking space. Located in Forest View area with natural tree line boundary. Perfect for residential colony development or industrial use.",
+                    images: [
+                        "https://housing-images.n7net.in/01c16c28/7f5cd1af1e09e584ae20e8f6aca7d607/v0/medium/residential_plot-for-sale-lakshvar_vajaha-Lucknow-plot_view.jpg",
+                        "https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop"
+                    ]
+                }
+            ],
+            sarojini: [
+                {
+                    id: 7,
+                    name: "Near Neem Ka Ped",
+                    address: "404 Ocean Drive, Sunny Shores",
+                    bedrooms: 2,
+                    bathrooms: 1,
+                    sqft: 1200,
+                    price: "₹75,00,000",
+                    description: "Charming property near the famous Neem tree landmark. Features traditional architecture with modern amenities. Perfect blend of heritage and convenience in a peaceful neighborhood setting.",
+                    images: [
+                        "https://imagecdn.99acres.com/media1/31359/12/627192003M-1754117184428.webp",
+                        "https://images.unsplash.com/photo-1600607687644-c7171b42498b?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop"
+                    ]
+                },
+                {
+                    id: 8,
+                    name: "Near Aam Ka Pedh",
+                    address: "123 Pinecrest Lane, Mountainville",
+                    bedrooms: 3,
+                    bathrooms: 2,
+                    sqft: 1600,
+                    price: "₹95,00,000",
+                    description: "Beautiful property located near the iconic Aam (Mango) tree. Features spacious rooms with natural ventilation and traditional design elements. Ideal for families seeking authentic neighborhood living.",
+                    images: [
+                        "https://i0.wp.com/solarvillageproject.org/wp-content/uploads/2023/03/scroling-pic2-9-scaled.jpg?ssl=1",
+                        "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
+                        "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=800&h=600&fit=crop"
+                    ]
+                }
+            ]
+        };
+
+        // Authentication
+        const CORRECT_PASSWORD = "realestate123";
+        let currentArea = null;
+        let currentProperty = null;
+
+        // Simple page navigation system
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            const page = document.getElementById(pageId);
+            if (page) {
+                page.classList.add('active');
+            }
+        }
+
+        // Authentication functions
+        function handleLogin(e) {
+            e.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (password === CORRECT_PASSWORD) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                document.getElementById('passwordInput').value = '';
+                errorMessage.classList.add('hidden');
+                showPage('homePage');
+            } else {
+                errorMessage.textContent = 'Incorrect password. Please try again.';
+                errorMessage.classList.remove('hidden');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        function handleLogout() {
+            document.getElementById('mainContent').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            showPage('homePage');
+        }
+
+        // Navigation functions
+        function showAreaSelection() {
+            showPage('areaSelection');
+        }
+
+        function showPropertyListings(area) {
+            currentArea = area;
+            const areaNames = {
+                'aminabad': 'Aminabad',
+                'malak': 'Malak',
+                'sarojini': 'Sarojini Nagar'
+            };
+            
+            document.getElementById('areaTitle').textContent = areaNames[area];
+            showPage('propertyListings');
+            renderProperties(propertyData[area]);
+        }
+
+        function showHomePage() {
+            showPage('homePage');
+        }
+
+        // Property rendering
+        function renderProperties(properties) {
+            const propertiesGrid = document.getElementById('propertiesGrid');
+            propertiesGrid.innerHTML = '';
+            
+            properties.forEach(property => {
+                const propertyCard = document.createElement('div');
+                propertyCard.className = 'glass-effect rounded-2xl overflow-hidden cursor-pointer scale-hover';
+                propertyCard.innerHTML = `
+                    <div class="aspect-video bg-gray-800 overflow-hidden">
+                        <img src="${property.images[0]}" alt="${property.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">${property.name}</h3>
+                        <p class="text-gray-400 mb-3">${property.address}</p>
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm text-gray-300">
+                                ${property.bedrooms} bed • ${property.bathrooms} bath • ${property.sqft.toLocaleString()} sqft
+                            </div>
+                            <div class="text-warm-gold font-bold text-lg">${property.price}</div>
+                        </div>
+                    </div>
+                `;
+                
+                propertyCard.addEventListener('click', () => {
+                    showPropertyDetails(property);
+                });
+                
+                propertiesGrid.appendChild(propertyCard);
+            });
+        }
+
+        // Property details modal
+        function showPropertyDetails(property) {
+            currentProperty = property;
+            document.getElementById('modalTitle').textContent = property.name;
+            
+            // Set main image
+            const mainImage = document.getElementById('mainImage');
+            mainImage.innerHTML = `<img src="${property.images[0]}" alt="${property.name}" class="w-full h-full object-cover">`;
+            
+            // Set thumbnails
+            const thumbnailGallery = document.getElementById('thumbnailGallery');
+            thumbnailGallery.innerHTML = '';
+            property.images.forEach((image, index) => {
+                const thumbnail = document.createElement('div');
+                thumbnail.className = `aspect-video bg-gray-800 rounded overflow-hidden cursor-pointer ${index === 0 ? 'ring-2 ring-warm-gold' : ''}`;
+                thumbnail.innerHTML = `<img src="${image}" alt="${property.name}" class="w-full h-full object-cover">`;
+                
+                thumbnail.addEventListener('click', () => {
+                    mainImage.innerHTML = `<img src="${image}" alt="${property.name}" class="w-full h-full object-cover">`;
+                    // Update active thumbnail
+                    document.querySelectorAll('#thumbnailGallery > div').forEach(thumb => {
+                        thumb.classList.remove('ring-2', 'ring-warm-gold');
+                    });
+                    thumbnail.classList.add('ring-2', 'ring-warm-gold');
+                });
+                
+                thumbnailGallery.appendChild(thumbnail);
+            });
+            
+            // Set property details
+            const propertyDetails = document.getElementById('propertyDetails');
+            propertyDetails.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-2xl font-bold text-warm-gold mb-2">${property.price}</h3>
+                        <p class="text-gray-400">${property.address}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4 py-4 border-y border-gray-600">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-warm-gold">${property.bedrooms}</div>
+                            <div class="text-sm text-gray-400">Bedrooms</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-warm-gold">${property.bathrooms}</div>
+                            <div class="text-sm text-gray-400">Bathrooms</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-warm-gold">${property.sqft.toLocaleString()}</div>
+                            <div class="text-sm text-gray-400">Square Feet</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-semibold mb-3">Description</h4>
+                        <p class="text-gray-300 leading-relaxed">${property.description}</p>
+                    </div>
+                    
+                    <div class="pt-4">
+                        <button class="w-full bg-warm-gold text-dark-gray font-semibold py-3 px-6 rounded-lg hover:bg-bronze transition-colors">
+                            Schedule Viewing
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('propertyModal').classList.remove('hidden');
+        }
+
+        function closePropertyModal() {
+            document.getElementById('propertyModal').classList.add('hidden');
+            currentProperty = null;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Navigation buttons
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            document.getElementById('homeNavBtn').addEventListener('click', showHomePage);
+            document.getElementById('areasNavBtn').addEventListener('click', showAreaSelection);
+            
+            // Explore button
+            document.getElementById('exploreBtn').addEventListener('click', showAreaSelection);
+            
+            // Back to areas button
+            document.getElementById('backToAreas').addEventListener('click', showAreaSelection);
+            
+            // Area selection cards
+            document.querySelectorAll('.area-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const area = card.dataset.area;
+                    showPropertyListings(area);
+                });
+            });
+            
+            // Modal controls
+            document.getElementById('closeModal').addEventListener('click', closePropertyModal);
+            document.getElementById('propertyModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('propertyModal')) {
+                    closePropertyModal();
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (!document.getElementById('propertyModal').classList.contains('hidden')) {
+                        closePropertyModal();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
